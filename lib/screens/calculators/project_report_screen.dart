@@ -2,6 +2,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../providers/project_provider.dart';
+import '../../providers/settings_provider.dart';
 import '../../utils/pdf_report_service.dart';
 import '../dashboard_screen.dart';
 class _PureGlassCard extends StatelessWidget {
@@ -126,7 +127,8 @@ class _ProjectReportScreenState extends State<ProjectReportScreen> {
 
     setState(() => _generatingPdf = true);
     try {
-      final savePath = await PdfReportService.downloadPdf(project);
+      final settings = context.read<SettingsProvider>();
+      final savePath = await PdfReportService.downloadPdf(project, settings);
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
@@ -164,7 +166,8 @@ class _ProjectReportScreenState extends State<ProjectReportScreen> {
 
     setState(() => _sharingPdf = true);
     try {
-      await PdfReportService.sharePdf(project);
+      final settings = context.read<SettingsProvider>();
+      await PdfReportService.sharePdf(project, settings);
     } catch (e) {
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -361,7 +364,7 @@ class _ProjectReportScreenState extends State<ProjectReportScreen> {
                                     ),
                                   ),
                                   Text(
-                                    'Rs ${_fmt(project.totalEstimatedCost)}',
+                                    context.watch<SettingsProvider>().formatCost(project.totalEstimatedCost),
                                     style: const TextStyle(
                                       fontSize: 18,
                                       fontWeight: FontWeight.w700,

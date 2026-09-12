@@ -1,20 +1,24 @@
 import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../providers/project_provider.dart';
-import '../utils/app_constants.dart';
 import '../models/project_model.dart';
-import 'new_project/new_project_screen.dart';
-import 'calculators/flooring_calculator_screen.dart';
-import 'calculators/paint_calculator_screen.dart';
-import 'calculators/tiles_calculator_screen.dart';
+import '../providers/project_provider.dart';
+import '../providers/settings_provider.dart';
+import '../utils/app_constants.dart';
 import 'calculators/ceiling_calculator_screen.dart';
 import 'calculators/doors_windows_screen.dart';
-import 'calculators/project_report_screen.dart';
 import 'calculators/electrical_calculator_screen.dart';
-import 'calculators/plumbing_calculator_screen.dart';
+import 'calculators/flooring_calculator_screen.dart';
 import 'calculators/furniture_fixtures_screen.dart';
+import 'calculators/paint_calculator_screen.dart';
+import 'calculators/plumbing_calculator_screen.dart';
+import 'calculators/project_report_screen.dart';
+import 'calculators/tiles_calculator_screen.dart';
+import 'legal/privacy_policy_screen.dart';
+import 'legal/terms_conditions_screen.dart';
+import 'new_project/new_project_screen.dart';
 
 // --- Pure Glassmorphism Helper Widgets ---
 
@@ -91,10 +95,7 @@ class _PureGlassCard extends StatelessWidget {
             ),
           ],
         ),
-        child: ClipRRect(
-          borderRadius: radius,
-          child: glassBody,
-        ),
+        child: ClipRRect(borderRadius: radius, child: glassBody),
       ),
     );
 
@@ -117,10 +118,7 @@ class _ZenBackground extends StatelessWidget {
       child: Stack(
         fit: StackFit.expand,
         children: [
-          Image.asset(
-            'assets/images/b.jpg',
-            fit: BoxFit.cover,
-          ),
+          Image.asset('assets/images/b.jpg', fit: BoxFit.cover),
           Container(
             decoration: BoxDecoration(
               gradient: LinearGradient(
@@ -182,11 +180,17 @@ class _DashboardScreenState extends State<DashboardScreen> {
   Widget _buildBody() {
     switch (_currentIndex) {
       case 0:
-        return _DashboardTab(onIndexChange: (i) => setState(() => _currentIndex = i));
+        return _DashboardTab(
+          onIndexChange: (i) => setState(() => _currentIndex = i),
+        );
       case 1:
         return _ProjectsTab();
+      case 2:
+        return const _SettingsTab();
       default:
-        return _DashboardTab(onIndexChange: (i) => setState(() => _currentIndex = i));
+        return _DashboardTab(
+          onIndexChange: (i) => setState(() => _currentIndex = i),
+        );
     }
   }
 
@@ -194,6 +198,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
     const items = [
       {'icon': Icons.home, 'activeIcon': Icons.home_mini_sharp},
       {'icon': Icons.folder_open, 'activeIcon': Icons.folder},
+      {'icon': Icons.settings_outlined, 'activeIcon': Icons.settings},
     ];
 
     return SafeArea(
@@ -210,7 +215,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 final segmentWidth = constraints.maxWidth / items.length;
                 final indicatorWidth = segmentWidth * 0.85;
                 final indicatorLeft =
-                    _currentIndex * segmentWidth + (segmentWidth - indicatorWidth) / 2;
+                    _currentIndex * segmentWidth +
+                    (segmentWidth - indicatorWidth) / 2;
 
                 return Stack(
                   children: [
@@ -225,7 +231,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
                         decoration: BoxDecoration(
                           color: Colors.white.withValues(alpha: 0.25),
                           borderRadius: BorderRadius.circular(30),
-                          border: Border.all(color: Colors.white.withValues(alpha: 0.4)),
+                          border: Border.all(
+                            color: Colors.white.withValues(alpha: 0.4),
+                          ),
                         ),
                       ),
                     ),
@@ -331,23 +339,38 @@ class _DashboardTab extends StatelessWidget {
                 children: [
                   const Text(
                     'Total Projects',
-                    style: TextStyle(fontSize: 14, color: Colors.white70, fontWeight: FontWeight.w400),
+                    style: TextStyle(
+                      fontSize: 14,
+                      color: Colors.white70,
+                      fontWeight: FontWeight.w400,
+                    ),
                   ),
                   const SizedBox(height: 8),
                   Text(
                     '0${provider.projects.length}',
-                    style: const TextStyle(fontSize: 36, fontWeight: FontWeight.w600, color: Colors.white),
+                    style: const TextStyle(
+                      fontSize: 36,
+                      fontWeight: FontWeight.w600,
+                      color: Colors.white,
+                    ),
                   ),
                 ],
               ),
               _PureGlassCard(
                 isHighlight: true,
-                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 10,
+                  vertical: 10,
+                ),
                 borderRadius: BorderRadius.circular(20),
                 onTap: () => onIndexChange(1),
                 child: const Text(
                   'View all',
-                  style: TextStyle(color: Colors.white, fontSize: 13, fontWeight: FontWeight.w600),
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 13,
+                    fontWeight: FontWeight.w600,
+                  ),
                 ),
               ),
             ],
@@ -362,12 +385,22 @@ class _DashboardTab extends StatelessWidget {
             children: [
               const Text(
                 'Total Estimated Cost',
-                style: TextStyle(fontSize: 14, color: Colors.white70, fontWeight: FontWeight.w400),
+                style: TextStyle(
+                  fontSize: 14,
+                  color: Colors.white70,
+                  fontWeight: FontWeight.w400,
+                ),
               ),
               const SizedBox(height: 8),
               Text(
-                'Rs ${_formatAmount(provider.totalEstimatedCost)}',
-                style: const TextStyle(fontSize: 32, fontWeight: FontWeight.w400, color: Colors.white),
+                context.watch<SettingsProvider>().formatCost(
+                  provider.totalEstimatedCost,
+                ),
+                style: const TextStyle(
+                  fontSize: 32,
+                  fontWeight: FontWeight.w400,
+                  color: Colors.white,
+                ),
               ),
             ],
           ),
@@ -380,7 +413,11 @@ class _DashboardTab extends StatelessWidget {
   // microtask so the page-transition animation isn't competing with a
   // full dashboard rebuild on the same frame (that collision was the
   // "jhatka" on tap).
-  void _openCalculator(BuildContext context, ProjectProvider provider, Widget screen) {
+  void _openCalculator(
+    BuildContext context,
+    ProjectProvider provider,
+    Widget screen,
+  ) {
     Navigator.push(context, MaterialPageRoute(builder: (_) => screen));
     Future.microtask(() => provider.startNewProject());
   }
@@ -410,55 +447,88 @@ class _DashboardTab extends StatelessWidget {
               imagePath: 'assets/images/cr.png',
               label: 'New Project',
               subtitle: 'Start blank',
-              onTap: () => _openCalculator(context, provider, const NewProjectScreen()),
+              onTap: () =>
+                  _openCalculator(context, provider, const NewProjectScreen()),
             ),
             _QuickActionCard(
               imagePath: 'assets/images/fl.png',
               label: 'Flooring',
               subtitle: 'Tiles & Wood',
-              onTap: () => _openCalculator(context, provider, const FlooringCalculatorScreen()),
+              onTap: () => _openCalculator(
+                context,
+                provider,
+                const FlooringCalculatorScreen(),
+              ),
             ),
             _QuickActionCard(
               imagePath: 'assets/images/p.png',
               label: 'Paint',
               subtitle: 'Walls & Roof',
-              onTap: () => _openCalculator(context, provider, const PaintCalculatorScreen()),
+              onTap: () => _openCalculator(
+                context,
+                provider,
+                const PaintCalculatorScreen(),
+              ),
             ),
             _QuickActionCard(
               imagePath: 'assets/images/t.png',
               label: 'Tiling',
               subtitle: 'Bath & Kitchen',
-              onTap: () => _openCalculator(context, provider, const TilesCalculatorScreen()),
+              onTap: () => _openCalculator(
+                context,
+                provider,
+                const TilesCalculatorScreen(),
+              ),
             ),
             _QuickActionCard(
               imagePath: 'assets/images/ce.png',
               label: 'Ceiling',
               subtitle: 'Plaster & Grid',
-              onTap: () => _openCalculator(context, provider, const CeilingCalculatorScreen()),
+              onTap: () => _openCalculator(
+                context,
+                provider,
+                const CeilingCalculatorScreen(),
+              ),
             ),
             _QuickActionCard(
               imagePath: 'assets/images/d.png',
               label: 'Doors & Windows',
               subtitle: 'Wood & Glass',
-              onTap: () => _openCalculator(context, provider, const DoorsWindowsScreen()),
+              onTap: () => _openCalculator(
+                context,
+                provider,
+                const DoorsWindowsScreen(),
+              ),
             ),
             _QuickActionCard(
               imagePath: 'assets/images/e.png',
               label: 'Electrical',
               subtitle: 'Wiring & Lights',
-              onTap: () => _openCalculator(context, provider, const ElectricalCalculatorScreen()),
+              onTap: () => _openCalculator(
+                context,
+                provider,
+                const ElectricalCalculatorScreen(),
+              ),
             ),
             _QuickActionCard(
               imagePath: 'assets/images/w.png',
               label: 'Plumbing',
               subtitle: 'Pipes & Fittings',
-              onTap: () => _openCalculator(context, provider, const PlumbingCalculatorScreen()),
+              onTap: () => _openCalculator(
+                context,
+                provider,
+                const PlumbingCalculatorScreen(),
+              ),
             ),
             _QuickActionCard(
               imagePath: 'assets/images/f.png',
               label: 'Furniture',
               subtitle: 'Beds & Sofas',
-              onTap: () => _openCalculator(context, provider, const FurnitureFixturesScreen()),
+              onTap: () => _openCalculator(
+                context,
+                provider,
+                const FurnitureFixturesScreen(),
+              ),
             ),
           ],
         ),
@@ -483,13 +553,6 @@ class _DashboardTab extends StatelessWidget {
         ...provider.projects.take(2).map((p) => _ProjectListItem(project: p)),
       ],
     );
-  }
-
-  String _formatAmount(double amount) {
-    if (amount >= 100000) {
-      return '${(amount / 1000).toStringAsFixed(0)},000';
-    }
-    return amount.toStringAsFixed(0);
   }
 }
 
@@ -518,12 +581,7 @@ class _QuickActionCard extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Expanded(
-            child: Center(
-              child: Image.asset(
-                imagePath,
-                fit: BoxFit.contain,
-              ),
-            ),
+            child: Center(child: Image.asset(imagePath, fit: BoxFit.contain)),
           ),
           const SizedBox(height: 12),
           Text(
@@ -557,7 +615,10 @@ class _ProjectListItem extends StatelessWidget {
 
   // FIX: same push-first, update-later pattern as the calculator cards.
   void _openReport(BuildContext context, ProjectProvider provider) {
-    Navigator.push(context, MaterialPageRoute(builder: (_) => const ProjectReportScreen()));
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (_) => const ProjectReportScreen()),
+    );
     Future.microtask(() => provider.selectProject(project));
   }
 
@@ -569,7 +630,10 @@ class _ProjectListItem extends StatelessWidget {
       child: _PureGlassCard(
         borderRadius: BorderRadius.circular(24),
         child: ListTile(
-          contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+          contentPadding: const EdgeInsets.symmetric(
+            horizontal: 20,
+            vertical: 12,
+          ),
           onTap: () => _openReport(context, provider),
           leading: Container(
             width: 50,
@@ -598,7 +662,9 @@ class _ProjectListItem extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Rs ${project.totalEstimatedCost.toStringAsFixed(0)}',
+                  context.watch<SettingsProvider>().formatCost(
+                    project.totalEstimatedCost,
+                  ),
                   style: const TextStyle(
                     fontSize: 14,
                     color: Colors.white70,
@@ -612,7 +678,9 @@ class _ProjectListItem extends StatelessWidget {
             icon: const Icon(Icons.more_horiz, color: Colors.white),
             color: const Color(0xFF2A2A35),
             elevation: 8,
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(16),
+            ),
             onSelected: (value) async {
               if (value == 'view') {
                 _openReport(context, provider);
@@ -621,7 +689,10 @@ class _ProjectListItem extends StatelessWidget {
                   context: context,
                   builder: (ctx) => AlertDialog(
                     backgroundColor: const Color(0xFF2A2A35),
-                    title: const Text('Delete Project', style: TextStyle(color: Colors.white)),
+                    title: const Text(
+                      'Delete Project',
+                      style: TextStyle(color: Colors.white),
+                    ),
                     content: Text(
                       'Are you sure you want to delete "${project.name.isEmpty ? 'this project' : project.name}"?',
                       style: const TextStyle(color: Colors.white70),
@@ -629,11 +700,16 @@ class _ProjectListItem extends StatelessWidget {
                     actions: [
                       TextButton(
                         onPressed: () => Navigator.pop(ctx, false),
-                        child: const Text('Cancel', style: TextStyle(color: Colors.white70)),
+                        child: const Text(
+                          'Cancel',
+                          style: TextStyle(color: Colors.white70),
+                        ),
                       ),
                       TextButton(
                         onPressed: () => Navigator.pop(ctx, true),
-                        style: TextButton.styleFrom(foregroundColor: Colors.redAccent),
+                        style: TextButton.styleFrom(
+                          foregroundColor: Colors.redAccent,
+                        ),
                         child: const Text('Delete'),
                       ),
                     ],
@@ -642,7 +718,9 @@ class _ProjectListItem extends StatelessWidget {
                 if (confirm == true) {
                   await provider.deleteProject(project.id);
                   if (context.mounted) {
-                    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Project deleted')));
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text('Project deleted')),
+                    );
                   }
                 }
               }
@@ -652,7 +730,11 @@ class _ProjectListItem extends StatelessWidget {
                 value: 'view',
                 child: Row(
                   children: [
-                    Icon(Icons.visibility_outlined, size: 18, color: Colors.white),
+                    Icon(
+                      Icons.visibility_outlined,
+                      size: 18,
+                      color: Colors.white,
+                    ),
                     SizedBox(width: 8),
                     Text('View Report', style: TextStyle(color: Colors.white)),
                   ],
@@ -662,7 +744,11 @@ class _ProjectListItem extends StatelessWidget {
                 value: 'delete',
                 child: Row(
                   children: [
-                    Icon(Icons.delete_outline, size: 18, color: Colors.redAccent),
+                    Icon(
+                      Icons.delete_outline,
+                      size: 18,
+                      color: Colors.redAccent,
+                    ),
                     SizedBox(width: 8),
                     Text('Delete', style: TextStyle(color: Colors.redAccent)),
                   ],
@@ -713,7 +799,8 @@ class _ProjectsTab extends StatelessWidget {
                   Expanded(
                     child: ListView.builder(
                       itemCount: provider.projects.length,
-                      itemBuilder: (_, i) => _ProjectListItem(project: provider.projects[i]),
+                      itemBuilder: (_, i) =>
+                          _ProjectListItem(project: provider.projects[i]),
                     ),
                   ),
               ],
@@ -721,6 +808,148 @@ class _ProjectsTab extends StatelessWidget {
           ),
         );
       },
+    );
+  }
+}
+
+// ─── Settings Tab ────────────────────────────────────────────────────────────
+
+class _SettingsTab extends StatelessWidget {
+  const _SettingsTab();
+
+  @override
+  Widget build(BuildContext context) {
+    final settingsProvider = context.watch<SettingsProvider>();
+
+    return SafeArea(
+      bottom: false,
+      child: SingleChildScrollView(
+        padding: const EdgeInsets.fromLTRB(20, 32, 20, 100),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text(
+              'Settings',
+              style: TextStyle(
+                fontSize: 34,
+                fontWeight: FontWeight.w300,
+                color: Colors.white,
+                letterSpacing: -0.5,
+              ),
+            ),
+            const SizedBox(height: 32),
+
+            const Text(
+              'Preferences',
+              style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.w500,
+                color: Colors.white,
+              ),
+            ),
+            const SizedBox(height: 16),
+            _PureGlassCard(
+              padding: const EdgeInsets.all(16),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  const Text(
+                    'Currency',
+                    style: TextStyle(color: Colors.white, fontSize: 16),
+                  ),
+                  DropdownButtonHideUnderline(
+                    child: DropdownButton<Currency>(
+                      value: settingsProvider.selectedCurrency,
+                      dropdownColor: const Color(0xFF2A2A35),
+                      icon: const Icon(
+                        Icons.keyboard_arrow_down,
+                        color: Colors.white70,
+                      ),
+                      style: const TextStyle(color: Colors.white, fontSize: 16),
+                      onChanged: (Currency? newCurrency) {
+                        if (newCurrency != null) {
+                          settingsProvider.setCurrency(newCurrency);
+                        }
+                      },
+                      items: SettingsProvider.availableCurrencies.map((
+                        Currency currency,
+                      ) {
+                        return DropdownMenuItem<Currency>(
+                          value: currency,
+                          child: Text('${currency.code} (${currency.symbol})'),
+                        );
+                      }).toList(),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+
+            const SizedBox(height: 32),
+            const Text(
+              'Legal & About',
+              style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.w500,
+                color: Colors.white,
+              ),
+            ),
+            const SizedBox(height: 16),
+
+            _PureGlassCard(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => const PrivacyPolicyScreen(),
+                  ),
+                );
+              },
+              padding: const EdgeInsets.all(16),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: const [
+                  Text(
+                    'Privacy Policy',
+                    style: TextStyle(color: Colors.white, fontSize: 16),
+                  ),
+                  Icon(
+                    Icons.arrow_forward_ios,
+                    color: Colors.white70,
+                    size: 16,
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 12),
+            _PureGlassCard(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => const TermsConditionsScreen(),
+                  ),
+                );
+              },
+              padding: const EdgeInsets.all(16),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: const [
+                  Text(
+                    'Terms & Conditions',
+                    style: TextStyle(color: Colors.white, fontSize: 16),
+                  ),
+                  Icon(
+                    Icons.arrow_forward_ios,
+                    color: Colors.white70,
+                    size: 16,
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

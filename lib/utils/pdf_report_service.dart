@@ -5,6 +5,7 @@ import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:printing/printing.dart';
 import '../models/project_model.dart';
+import '../providers/settings_provider.dart';
 
 /// Generates PDF cost estimate reports for downloading and sharing.
 class PdfReportService {
@@ -16,7 +17,7 @@ class PdfReportService {
       RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'), (m) => '${m[1]},');
 
   /// Builds and returns PDF document bytes.
-  static Future<Uint8List> buildPdf(ProjectModel project) async {
+  static Future<Uint8List> generatePdf(ProjectModel project, SettingsProvider settings) async {
     final doc = pw.Document();
 
     const labelMap = {
@@ -124,7 +125,7 @@ class PdfReportService {
             data: items
                 .map((item) => [
               item['label'] as String,
-              'Rs ${_fmt(item['amount'] as double)}',
+              settings.formatCost(item['amount'] as double),
             ])
                 .toList(),
             headerStyle: pw.TextStyle(fontWeight: pw.FontWeight.bold, color: PdfColors.white),
@@ -149,7 +150,7 @@ class PdfReportService {
                         color: PdfColors.white,
                         fontWeight: pw.FontWeight.bold,
                         fontSize: 14)),
-                pw.Text('Rs ${_fmt(project.totalEstimatedCost)}',
+                pw.Text(settings.formatCost(project.totalEstimatedCost),
                     style: pw.TextStyle(
                         color: PdfColors.white,
                         fontWeight: pw.FontWeight.bold,
@@ -179,8 +180,8 @@ class PdfReportService {
   }
 
   /// Saves the PDF to storage and launches native print/save layout dialog.
-  static Future<String> downloadPdf(ProjectModel project) async {
-    final bytes = await buildPdf(project);
+  static Future<String> downloadPdf(ProjectModel project, SettingsProvider settings) async {
+    final bytes = await generatePdf(project, settings);
     final rawName = project.name.trim().isEmpty ? 'Project' : project.name.trim();
     final filename = '${rawName.replaceAll(RegExp(r'[^\w\s\-]'), '').replaceAll(' ', '_')}_estimate.pdf';
 
@@ -217,8 +218,8 @@ class PdfReportService {
   }
 
   /// Opens native share dialog.
-  static Future<void> sharePdf(ProjectModel project) async {
-    final bytes = await buildPdf(project);
+  static Future<void> sharePdf(ProjectModel project, SettingsProvider settings) async {
+    final bytes = await generatePdf(project, settings);
     final rawName = project.name.trim().isEmpty ? 'Project' : project.name.trim();
     final filename = '${rawName.replaceAll(RegExp(r'[^\w\s\-]'), '').replaceAll(' ', '_')}_estimate.pdf';
 

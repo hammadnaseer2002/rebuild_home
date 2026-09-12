@@ -1,4 +1,5 @@
 import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -6,8 +7,6 @@ import '../../providers/project_provider.dart';
 import '../../models/project_model.dart';
 import '../../utils/app_constants.dart';
 import 'select_calculators_screen.dart';
-
-// --- Pure Glassmorphism Helper Widgets ---
 
 class _PureGlassCard extends StatelessWidget {
   final Widget child;
@@ -136,7 +135,11 @@ class _RoomDimensionsScreenState extends State<RoomDimensionsScreen> {
     // 1. Validation Check (Required Fields)
     if (_length <= 0 || _width <= 0 || _height <= 0) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please enter valid dimensions for Length, Width, and Height')),
+        const SnackBar(
+          content: Text(
+            'Please enter valid dimensions for Length, Width, and Height',
+          ),
+        ),
       );
       return;
     }
@@ -155,12 +158,18 @@ class _RoomDimensionsScreenState extends State<RoomDimensionsScreen> {
     provider.recalculateAll();
     provider.setProjectStep(3);
     Navigator.push(
-        context,
-        MaterialPageRoute(builder: (_) => const SelectCalculatorsScreen()));
+      context,
+      MaterialPageRoute(builder: (_) => const SelectCalculatorsScreen()),
+    );
   }
 
-  ProjectModel _copyWith(ProjectModel p,
-      {double? roomLength, double? roomWidth, double? roomHeight, String? unit}) {
+  ProjectModel _copyWith(
+    ProjectModel p, {
+    double? roomLength,
+    double? roomWidth,
+    double? roomHeight,
+    String? unit,
+  }) {
     return ProjectModel(
       id: p.id,
       name: p.name,
@@ -251,18 +260,33 @@ class _RoomDimensionsScreenState extends State<RoomDimensionsScreen> {
               children: [
                 // Unit toggle inside a glass container
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 18),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 20,
+                    vertical: 18,
+                  ),
                   child: _PureGlassCard(
-                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 10,
+                    ),
                     borderRadius: BorderRadius.circular(20),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        const Text('Unit', style: TextStyle(fontSize: 14, color: Colors.white70, fontWeight: FontWeight.w500)),
+                        const Text(
+                          'Unit',
+                          style: TextStyle(
+                            fontSize: 14,
+                            color: Colors.white70,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
                         Container(
                           decoration: BoxDecoration(
                             color: Colors.white.withValues(alpha: 0.1),
-                            border: Border.all(color: Colors.white.withValues(alpha: 0.3)),
+                            border: Border.all(
+                              color: Colors.white.withValues(alpha: 0.3),
+                            ),
                             borderRadius: BorderRadius.circular(20),
                           ),
                           child: Row(
@@ -272,16 +296,25 @@ class _RoomDimensionsScreenState extends State<RoomDimensionsScreen> {
                                 onTap: () => setState(() => _unit = u),
                                 child: AnimatedContainer(
                                   duration: const Duration(milliseconds: 20),
-                                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 20,
+                                    vertical: 8,
+                                  ),
                                   decoration: BoxDecoration(
-                                    color: isActive ? Colors.white.withValues(alpha: 0.3) : Colors.transparent,
+                                    color: isActive
+                                        ? Colors.white.withValues(alpha: 0.3)
+                                        : Colors.transparent,
                                     borderRadius: BorderRadius.circular(20),
                                   ),
                                   child: Text(
                                     u,
                                     style: TextStyle(
-                                      color: isActive ? Colors.white : Colors.white70,
-                                      fontWeight: isActive ? FontWeight.w700 : FontWeight.w500,
+                                      color: isActive
+                                          ? Colors.white
+                                          : Colors.white70,
+                                      fontWeight: isActive
+                                          ? FontWeight.w700
+                                          : FontWeight.w500,
                                     ),
                                   ),
                                 ),
@@ -296,7 +329,10 @@ class _RoomDimensionsScreenState extends State<RoomDimensionsScreen> {
 
                 Expanded(
                   child: SingleChildScrollView(
-                    padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 20,
+                      vertical: 12,
+                    ),
                     child: Column(
                       children: [
                         // Room diagram
@@ -333,8 +369,18 @@ class _RoomDimensionsScreenState extends State<RoomDimensionsScreen> {
 
                         TextButton.icon(
                           onPressed: () {},
-                          icon: const Icon(Icons.help_outline, size: 16, color: Colors.white70),
-                          label: const Text('How to measure?', style: TextStyle(color: Colors.white70, fontSize: 13)),
+                          icon: const Icon(
+                            Icons.help_outline,
+                            size: 16,
+                            color: Colors.white70,
+                          ),
+                          label: const Text(
+                            'How to measure?',
+                            style: TextStyle(
+                              color: Colors.white70,
+                              fontSize: 13,
+                            ),
+                          ),
                         ),
                         const SizedBox(height: 20),
                       ],
@@ -361,7 +407,10 @@ class _RoomDimensionsScreenState extends State<RoomDimensionsScreen> {
               height: 90,
               decoration: BoxDecoration(
                 color: Colors.white.withValues(alpha: 0.15),
-                border: Border.all(color: Colors.white.withValues(alpha: 0.6), width: 1.5),
+                border: Border.all(
+                  color: Colors.white.withValues(alpha: 0.6),
+                  width: 1.5,
+                ),
                 borderRadius: BorderRadius.circular(12),
               ),
             ),
@@ -376,7 +425,14 @@ class _RoomDimensionsScreenState extends State<RoomDimensionsScreen> {
               children: [
                 const Icon(Icons.arrow_back, size: 12, color: Colors.white),
                 const SizedBox(width: 4),
-                const Text('Length (L)', style: TextStyle(fontSize: 11, color: Colors.white, fontWeight: FontWeight.w600)),
+                const Text(
+                  'Length (L)',
+                  style: TextStyle(
+                    fontSize: 11,
+                    color: Colors.white,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
                 const SizedBox(width: 4),
                 const Icon(Icons.arrow_forward, size: 12, color: Colors.white),
               ],
@@ -394,7 +450,14 @@ class _RoomDimensionsScreenState extends State<RoomDimensionsScreen> {
                 const SizedBox(height: 2),
                 const RotatedBox(
                   quarterTurns: 1,
-                  child: Text('Width (W)', style: TextStyle(fontSize: 11, color: Colors.white, fontWeight: FontWeight.w600)),
+                  child: Text(
+                    'Width (W)',
+                    style: TextStyle(
+                      fontSize: 11,
+                      color: Colors.white,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
                 ),
                 const SizedBox(height: 2),
                 const Icon(Icons.arrow_downward, size: 12, color: Colors.white),
@@ -415,15 +478,27 @@ class _RoomDimensionsScreenState extends State<RoomDimensionsScreen> {
         children: [
           Row(
             children: [
-              Text(label, style: const TextStyle(fontSize: 15, color: Colors.white, fontWeight: FontWeight.w500)),
-              const Text(' *', style: TextStyle(color: Colors.redAccent, fontSize: 15)), // Required Indicator
+              Text(
+                label,
+                style: const TextStyle(
+                  fontSize: 15,
+                  color: Colors.white,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+              const Text(
+                ' *',
+                style: TextStyle(color: Colors.redAccent, fontSize: 15),
+              ), // Required Indicator
             ],
           ),
           // Distinct Input Background
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
             decoration: BoxDecoration(
-              color: Colors.black.withValues(alpha: 0.3), // Darker tint for input field
+              color: Colors.black.withValues(
+                alpha: 0.3,
+              ), // Darker tint for input field
               borderRadius: BorderRadius.circular(12),
               border: Border.all(color: Colors.white.withValues(alpha: 0.1)),
             ),
@@ -437,7 +512,11 @@ class _RoomDimensionsScreenState extends State<RoomDimensionsScreen> {
                     textAlign: TextAlign.right,
                     onChanged: (_) => setState(() {}),
                     cursorColor: Colors.white,
-                    style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: Colors.white),
+                    style: const TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600,
+                      color: Colors.white,
+                    ),
                     decoration: const InputDecoration(
                       hintText: '0',
                       hintStyle: TextStyle(
@@ -451,7 +530,10 @@ class _RoomDimensionsScreenState extends State<RoomDimensionsScreen> {
                   ),
                 ),
                 const SizedBox(width: 6),
-                Text(_unit, style: const TextStyle(fontSize: 14, color: Colors.white54)),
+                Text(
+                  _unit,
+                  style: const TextStyle(fontSize: 14, color: Colors.white54),
+                ),
               ],
             ),
           ),

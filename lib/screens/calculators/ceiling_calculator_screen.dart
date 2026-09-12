@@ -1,8 +1,8 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-
 import '../../providers/project_provider.dart';
+import '../../providers/settings_provider.dart';
 import '../../models/project_model.dart';
 import '../../utils/app_constants.dart';
 import '../../widgets/common_widgets.dart';
@@ -349,7 +349,7 @@ class _CeilingCalculatorScreenState extends State<CeilingCalculatorScreen> {
                                     ),
                                   ),
                                   Text(
-                                    'Rs ${entry.value.toStringAsFixed(0)}/sq ft',
+                                    '${context.watch<SettingsProvider>().formatCost(entry.value)}/sq ft',
                                     style: const TextStyle(
                                       fontSize: 13,
                                       color: Colors.white70,
@@ -366,7 +366,7 @@ class _CeilingCalculatorScreenState extends State<CeilingCalculatorScreen> {
                         _EditableRow(
                           label: 'Custom Rate (per sq ft)',
                           controller: _rateController,
-                          prefix: 'Rs ',
+                          prefix: '${context.watch<SettingsProvider>().selectedCurrency.symbol} ',
                           onChanged: (v) => setState(() {
                             _ratePerSqFt = double.tryParse(v) ?? 0;
                             _ceilingType = ''; // Reset selection if manually typing
@@ -402,7 +402,7 @@ class _CeilingCalculatorScreenState extends State<CeilingCalculatorScreen> {
                               ),
                             ),
                             Text(
-                              'Rs ${_estimatedCost.toStringAsFixed(0)}',
+                              context.watch<SettingsProvider>().formatCost(_estimatedCost),
                               style: const TextStyle(
                                 fontSize: 28,
                                 fontWeight: FontWeight.w600,

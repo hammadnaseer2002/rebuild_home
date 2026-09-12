@@ -1,8 +1,8 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-
 import '../../providers/project_provider.dart';
+import '../../providers/settings_provider.dart';
 import '../../models/project_model.dart';
 import '../../utils/app_constants.dart';
 import '../new_project/calculator_flow_screen.dart';
@@ -304,7 +304,7 @@ class _FurnitureFixturesScreenState extends State<FurnitureFixturesScreen> {
                                     ],
                                   ),
                                   Text(
-                                    'Rs ${_formatCurrency(itemTotal)}',
+                                    context.watch<SettingsProvider>().formatCost(itemTotal),
                                     style: const TextStyle(
                                       fontSize: 16,
                                       fontWeight: FontWeight.w600,
@@ -336,7 +336,7 @@ class _FurnitureFixturesScreenState extends State<FurnitureFixturesScreen> {
                                         ),
                                         child: Row(
                                           children: [
-                                            const Text('Rs ', style: TextStyle(fontSize: 14, color: Colors.white54)),
+                                            Text(context.watch<SettingsProvider>().selectedCurrency.symbol, style: const TextStyle(fontSize: 14, color: Colors.white54)),
                                             SizedBox(
                                               width: 55,
                                               child: TextFormField(
@@ -443,7 +443,7 @@ class _FurnitureFixturesScreenState extends State<FurnitureFixturesScreen> {
                               ),
                             ),
                             Text(
-                              'Rs ${_formatCurrency(_totalCost)}',
+                              context.watch<SettingsProvider>().formatCost(_totalCost),
                               style: const TextStyle(
                                 fontSize: 26,
                                 fontWeight: FontWeight.w600,

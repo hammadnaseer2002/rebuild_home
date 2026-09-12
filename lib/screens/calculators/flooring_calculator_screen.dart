@@ -1,8 +1,8 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-
 import '../../providers/project_provider.dart';
+import '../../providers/settings_provider.dart';
 import '../../models/project_model.dart';
 import '../../utils/app_constants.dart';
 import '../new_project/calculator_flow_screen.dart';
@@ -365,7 +365,7 @@ class _FlooringCalculatorScreenState extends State<FlooringCalculatorScreen> {
                                   ),
                                   const SizedBox(height: 4),
                                   Text(
-                                    'Rs ${entry.value.toStringAsFixed(0)} / sq ft',
+                                    '${context.watch<SettingsProvider>().formatCost(entry.value)} / sq ft',
                                     style: const TextStyle(
                                       fontSize: 10,
                                       color: Colors.white70,
@@ -398,7 +398,7 @@ class _FlooringCalculatorScreenState extends State<FlooringCalculatorScreen> {
                           label: 'Material Rate',
                           controller: _rateController,
                           hint: '0',
-                          prefix: 'Rs ',
+                          prefix: '${context.watch<SettingsProvider>().selectedCurrency.symbol} ',
                           suffix: '/ sq ft',
                           isRequired: true,
                           onChanged: (_) => setState(() {
@@ -431,7 +431,7 @@ class _FlooringCalculatorScreenState extends State<FlooringCalculatorScreen> {
                               ),
                             ),
                             Text(
-                              'Rs ${_formatAmount(_estimatedCost)}',
+                              context.watch<SettingsProvider>().formatCost(_estimatedCost),
                               style: const TextStyle(
                                 fontSize: 26,
                                 fontWeight: FontWeight.w600,

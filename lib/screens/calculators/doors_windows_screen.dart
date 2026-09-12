@@ -1,8 +1,8 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-
 import '../../providers/project_provider.dart';
+import '../../providers/settings_provider.dart';
 import '../../models/project_model.dart';
 import '../../utils/app_constants.dart';
 import '../../widgets/common_widgets.dart';
@@ -252,7 +252,7 @@ class _DoorsWindowsScreenState extends State<DoorsWindowsScreen> {
                           label: 'Main Door',
                           priceController: _mainDoorPriceCtrl,
                           qty: _mainDoors,
-                          total: 'Rs ${_formatCurrency(_mainDoorCost)}',
+                          total: context.watch<SettingsProvider>().formatCost(_mainDoorCost),
                           onChanged: (_) => setState(() {}),
                           onDecrement: () { if (_mainDoors > 0) setState(() => _mainDoors--); },
                           onIncrement: () => setState(() => _mainDoors++),
@@ -261,7 +261,7 @@ class _DoorsWindowsScreenState extends State<DoorsWindowsScreen> {
                           label: 'Room Doors',
                           priceController: _roomDoorPriceCtrl,
                           qty: _roomDoors,
-                          total: 'Rs ${_formatCurrency(_roomDoorCost)}',
+                          total: context.watch<SettingsProvider>().formatCost(_roomDoorCost),
                           onChanged: (_) => setState(() {}),
                           onDecrement: () { if (_roomDoors > 0) setState(() => _roomDoors--); },
                           onIncrement: () => setState(() => _roomDoors++),
@@ -270,7 +270,7 @@ class _DoorsWindowsScreenState extends State<DoorsWindowsScreen> {
                           label: 'Bathroom Doors',
                           priceController: _bathroomDoorPriceCtrl,
                           qty: _bathroomDoors,
-                          total: 'Rs ${_formatCurrency(_bathroomDoorCost)}',
+                          total: context.watch<SettingsProvider>().formatCost(_bathroomDoorCost),
                           onChanged: (_) => setState(() {}),
                           onDecrement: () { if (_bathroomDoors > 0) setState(() => _bathroomDoors--); },
                           onIncrement: () => setState(() => _bathroomDoors++),
@@ -288,7 +288,7 @@ class _DoorsWindowsScreenState extends State<DoorsWindowsScreen> {
                           label: 'Windows',
                           priceController: _windowPriceCtrl,
                           qty: _windows,
-                          total: 'Rs ${_formatCurrency(_windowCost)}',
+                          total: context.watch<SettingsProvider>().formatCost(_windowCost),
                           onChanged: (_) => setState(() {}),
                           onDecrement: () { if (_windows > 0) setState(() => _windows--); },
                           onIncrement: () => setState(() => _windows++),
@@ -297,7 +297,7 @@ class _DoorsWindowsScreenState extends State<DoorsWindowsScreen> {
                           label: 'Ventilators',
                           priceController: _ventilatorPriceCtrl,
                           qty: _ventilators,
-                          total: 'Rs ${_formatCurrency(_ventilatorCost)}',
+                          total: context.watch<SettingsProvider>().formatCost(_ventilatorCost),
                           onChanged: (_) => setState(() {}),
                           onDecrement: () { if (_ventilators > 0) setState(() => _ventilators--); },
                           onIncrement: () => setState(() => _ventilators++),
@@ -323,7 +323,7 @@ class _DoorsWindowsScreenState extends State<DoorsWindowsScreen> {
                               style: TextStyle(fontSize: 14, color: Colors.white70, fontWeight: FontWeight.w400),
                             ),
                             Text(
-                              'Rs ${_formatCurrency(_totalCost)}',
+                              context.watch<SettingsProvider>().formatCost(_totalCost),
                               style: const TextStyle(fontSize: 26, fontWeight: FontWeight.w600, color: Colors.white),
                             ),
                           ],
@@ -423,7 +423,7 @@ class _ItemRow extends StatelessWidget {
                       ),
                       child: Row(
                         children: [
-                          const Text('Rs ', style: TextStyle(fontSize: 14, color: Colors.white54)),
+                          Text(context.watch<SettingsProvider>().selectedCurrency.symbol, style: const TextStyle(fontSize: 14, color: Colors.white54)),
                           SizedBox(
                             width: 55,
                             child: TextFormField(

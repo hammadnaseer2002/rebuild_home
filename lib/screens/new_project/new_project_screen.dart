@@ -123,7 +123,6 @@ class _NewProjectScreenState extends State<NewProjectScreen> {
   final _nameController = TextEditingController();
   final _areaController = TextEditingController();
   final _descController = TextEditingController();
-  String _selectedCity = 'Lahore, Pakistan';
   String _selectedPropertyType = 'gv';
 
   @override
@@ -146,7 +145,7 @@ class _NewProjectScreenState extends State<NewProjectScreen> {
     final updated = ProjectModel(
       id: current.id,
       name: _nameController.text.trim(),
-      city: _selectedCity,
+      city: current.city,
       propertyType: _selectedPropertyType,
       projectArea: double.tryParse(_areaController.text),
       description: _descController.text.trim(),
@@ -282,25 +281,7 @@ class _NewProjectScreenState extends State<NewProjectScreen> {
                         ),
                         const SizedBox(height: 24),
 
-                        // City dropdown
-                        const Text('Select City', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: Colors.white)),
-                        const SizedBox(height: 8),
-                        _PureGlassCard(
-                          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-                          child: DropdownButtonFormField<String>(
-                            value: _selectedCity,
-                            dropdownColor: const Color(0xFF2A2A35),
-                            icon: const Icon(Icons.arrow_drop_down, color: Colors.white),
-                            style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w600, color: Colors.white),
-                            decoration: const InputDecoration(
-                              contentPadding: EdgeInsets.symmetric(horizontal: 0, vertical: 8),
-                              border: InputBorder.none,
-                            ),
-                            items: kPakistaniCities.map((c) => DropdownMenuItem(value: c, child: Text(c))).toList(),
-                            onChanged: (v) => setState(() => _selectedCity = v!),
-                          ),
-                        ),
-                        const SizedBox(height: 24),
+
 
                         // Property type
                         const Text('Property Type', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: Colors.white)),

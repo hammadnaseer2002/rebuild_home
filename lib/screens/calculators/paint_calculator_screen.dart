@@ -1,8 +1,8 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-
 import '../../providers/project_provider.dart';
+import '../../providers/settings_provider.dart';
 import '../../models/project_model.dart';
 import '../../utils/app_constants.dart';
 import '../new_project/calculator_flow_screen.dart';
@@ -434,7 +434,7 @@ class _PaintCalculatorScreenState extends State<PaintCalculatorScreen> {
                           label: 'Paint Rate',
                           controller: _rateController,
                           hint: '0',
-                          prefix: 'Rs ',
+                          prefix: '${context.watch<SettingsProvider>().selectedCurrency.symbol} ',
                           suffix: '/ Liter',
                           isRequired: true,
                           onChanged: (v) => setState(() => _paintRatePerLiter = double.tryParse(v) ?? 0),
@@ -467,7 +467,7 @@ class _PaintCalculatorScreenState extends State<PaintCalculatorScreen> {
                               ),
                             ),
                             Text(
-                              'Rs ${_formatAmount(_estimatedCost)}',
+                              context.watch<SettingsProvider>().formatCost(_estimatedCost),
                               style: const TextStyle(
                                 fontSize: 26,
                                 fontWeight: FontWeight.w600,
